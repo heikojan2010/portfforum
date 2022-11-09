@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Forum</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+     <!-- component -->
+<link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.4/dist/flowbite.min.css" />
+
+
+<style>
+    #background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    border: none;
+    pointer-events: none;
+    }
+
+    #bigfacts {
+        justify: center;
+    }
+
+    #chat-log {
+        background: transparent;
+        border: none;
+        padding-left: 66px;
+        margin: 1rem;
+        
+       
+    }
+    
+</style>
+</head>
+
+
+
+<body>
+   
+
+    
+        <div id-"bigfacts" class="container p-16 ">
+            
+                 <iframe src="https://hilarious-sunflower-07afc5.netlify.app/" id="background" class="fixed inset-0 w-full h-full border-0" ></iframe>
+
+                    
+                
+            
+
+               
+
+                    
+            <h2 class=" text-5xl text-white z-3">Public Chat Forum</h2>
+            <h3 class="text-2xl text-white"> 
+                
+                {% if user.is_authenticated %}
+
+                <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+
+                {% else %}
+                <p>Welcome to the forum. Please log in.</p>
+                <p><a href="{% url 'register' %}">Need an account?</a></p>
+                {% endif %}
+
+                 {% if user.is_authenticated %}
+                  <p><a href="{% url 'logout' %}">Logout</a></p>
+                 {% endif %}
+
+                
+                    </div>
+                </div>
+
+    <br />
+           {% csrf_token %}
+    
+          
+            
+   <textarea id="chat-log"  rows="19" cols="36" class="flow-root z-3 block p-66 text-2xl text-white">
+   </textarea><br>
+   <div class="container">
+    <input id="chat-message-input" type="text" 
+    class="flex text-red-900 border border-white rounded-lg bg-gray-50 ">
+
+    
+   </div>
+    <div class="container">
+    <input id="chat-message-submit" type="button" value="Send"
+    class="inline-flex text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+
+    
+
+</div>
+
+</body>
+
+     <script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"></script>
+
+     {{ request.user.username|json_script:"user_username" }}
+    
+    <script>
+      
+        // Inform the user about the error.
+
+
+
+let url = `ws://127.0.0.1:8000/ws/public/`
+
+let newurl = `ws://${window.location.host}/ws/public/`
+
+        var chatSocket = new WebSocket(newurl);
+       chatSocket.onopen = function(e) {
+  console.log('HIYA!');
+};
+        chatSocket.onmessage = function(e) {
+            
+            const data = JSON.parse(e.data);  
+            document.querySelector('#chat-log').value += (data.username + ':   ' +  data.message + '\n');
+            console.log(data)
+        };
+
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+               var label = document.getElementById("status-label");
+   label.innerHTML = "Error: " + e;
+        };
+
+/*        
+document.addEventListener("DOMContentLoaded", () => {  
+  document.querySelector('input')  
+    .addEventListener('change', (event) => {  
+      //...  
+    })  
+});
+*/
+
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+        const user_username = JSON.parse(document.getElementById('user_username').textContent);
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'username': user_username,
+                'message': message
+            }));
+
+            messageInputDom.value = '';
+        };
+    </script>
+    
+
+    
+
+
+
+</html>

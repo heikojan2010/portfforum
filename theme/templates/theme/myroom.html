@@ -1,0 +1,78 @@
+{% extends "theme/mybase.html" %}
+
+{% block content %}
+  {% load static %}
+  <h1>{{ room.label }}</h1>
+  <p class="quiet">
+    Anyone with this URL can join the room and chat: 
+    <code>{{ request.scheme }}://{{ request.get_host }}/{{ room.label }}</code> 
+  </p>
+  <p>
+    <label for="handle">Your name:</label>
+    <input id="handle" type="text" placeholder="handle">
+  </p>
+  <form id="chatform">
+    <table id="chat">
+      <tbody>
+        {% for message in messages %}
+          <tr>
+            <td>{{ message.formatted_timestamp }}</td>
+            <td>{{ message.handle }}</td>
+            <td>{{ message.message }}</td>
+          </tr> 
+        {% endfor %}
+      </tbody>
+      <tfoot>
+      <tr>
+        <td>Say something:</td>
+        <td colspan=2>
+          <input id="message" type="text" placeholder="message">
+          <button type="submit" id="go">Say it</button>
+        </td>
+      </tfoot>
+    </table>
+  </form>
+{% endblock content %}
+
+{% block afterbody %}
+  <script type="text/javascript" src='{% static "jquery-1.12.1.min.js" %}'></script>
+  
+  <script>
+    $(function() {
+    // When we're using HTTPS, use WSS too.
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+      
+let url = `ws://127.0.0.1:8000/ws/public/`
+
+        var chatSocket = new WebSocket(url);
+     chatSocket.onmessage = function(message) {
+        var data = JSON.parse(message.data);
+        var chat = ("#chat")
+        var ele = $('<tr></tr>')
+
+        ele.append(
+            $("<td></td>").text(data.timestamp)
+        )
+        ele.append(
+            $("<td></td>").text(data.handle)
+        )
+        ele.append(
+            $("<td></td>").text(data.message)
+        )
+        
+        chat.append(ele)
+    };
+
+    $("#chatform").on("submit", function(event) {
+        var message = {
+            handle: $('#handle').val(),
+            message: $('#message').val(),
+        }
+        chatSocket.send(JSON.stringify(message));
+        $("#message").val('').focus();
+        return false;
+    });
+    });
+  </script>
+  
+{% endblock afterbody %}
