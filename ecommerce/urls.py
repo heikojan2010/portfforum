@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path, reverse
 from rest_framework import routers
-from filebrowser.sites import site
+
 
 # Routers,,, to provide automatically determined URL conf...
 router = routers.DefaultRouter()

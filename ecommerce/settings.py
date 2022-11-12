@@ -70,29 +70,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'tailwind',
     'theme',
-    #'django_browser_reload',
-
-
-
-    'django_extensions',
-
-    'watchman',
-
-    #'defender', 
-
-    'health_check',                            
-    'health_check.db',                        
-    'health_check.cache',
-    'health_check.storage',
-    'health_check.contrib.migrations',
-    #'health_check.contrib.psutil',              # disk and memory utilization; requires psutil
-    'health_check.contrib.redis',  
-
-    'grappelli',
-    'filebrowser',
-
-    'simple_history',
-
+    
 
 
 
@@ -107,14 +85,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #"django_browser_reload.middleware.BrowserReloadMiddleware",
-    #'defender.middleware.FailedLoginMiddleware',
-    'simple_history.middleware.HistoryRequestMiddleware',
+   
+   
 ]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # this is default
-    'guardian.backends.ObjectPermissionBackend'
 )
 
 ASGI_APPLICATION = "ecommerce.asgi.application"
