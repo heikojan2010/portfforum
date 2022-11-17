@@ -45,7 +45,7 @@
    
 
     
-        <div id-"bigfacts" class="container p-16 ">
+        <div id="bigfacts" class="container p-16 ">
             
                  <iframe src="https://hilarious-sunflower-07afc5.netlify.app/" id="background" class="fixed inset-0 w-full h-full border-0" ></iframe>
 
@@ -129,8 +129,7 @@ let newurl = `ws://${window.location.host}/ws/public/`
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
-               var label = document.getElementById("status-label");
-   label.innerHTML = "Error: " + e;
+               
         };
 
 /*        
